@@ -6,6 +6,9 @@ import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.openai.OpenAiChatClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import reactor.core.publisher.Flux;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -44,6 +47,12 @@ public class BookstoreAssistantController {
         promptTemplate.add("book", book);
         return this.openAiChatClient.call(promptTemplate.create()).getResult().getOutput().getContent();
 
+    }
+
+    @GetMapping("/stream/informations")
+    public Flux<String> bookstoreChat(
+            @RequestParam(value = "message", defaultValue = "Quais são os livros best sellers dos ultimos anos?") String message) {
+        return openAiChatClient.stream(message);
     }
 
 }
